@@ -10,9 +10,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 ```
-# ============================================================
+
 # PASSO 1 - CONEXÃO COM O BANCO DE DADOS
-# ============================================================
+
 
 # Cria uma conexão com o banco de dados SQLite
 # Caso o arquivo não exista, ele será criado.
@@ -221,7 +221,8 @@ print(
     f"{maior_venda['produto']}, no valor de "
     f"R$ {maior_venda['valor_venda']:.2f}."
 )
-
+```
 # Fecha a conexão com o banco de dados
+```python
 conexao.close()
 ```
