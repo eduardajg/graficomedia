@@ -1,26 +1,30 @@
-# ============================================================
+
 # ATIVIDADE - ANÁLISE DE DADOS DE VENDAS
 # SQLite + Pandas + Matplotlib + Seaborn
-# ============================================================
+
 
 # Importação das bibliotecas
+```python
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+```
 # ============================================================
 # PASSO 1 - CONEXÃO COM O BANCO DE DADOS
 # ============================================================
 
 # Cria uma conexão com o banco de dados SQLite
 # Caso o arquivo não exista, ele será criado.
+```python
 conexao = sqlite3.connect('dados_vendas.db')
-
+```
 # Cria o cursor para executar comandos SQL
+```python
 cursor = conexao.cursor()
-
+```
 # Cria a tabela de vendas, caso ela ainda não exista
+```python
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS vendas1 (
     id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,12 +34,13 @@ CREATE TABLE IF NOT EXISTS vendas1 (
     valor_venda REAL
 )
 ''')
+```
 
-# ============================================================
 # INSERÇÃO DOS DADOS
-# ============================================================
+
 
 # Insere os dados de vendas na tabela
+```python
 cursor.executemany('''
 INSERT INTO vendas1
 (data_venda, produto, categoria, valor_venda)
@@ -56,86 +61,94 @@ VALUES (?, ?, ?, ?)
     ('2023-11-15', 'Produto M', 'Eletrônicos', 900.00),
     ('2023-12-20', 'Produto N', 'Livros', 250.00)
 ])
-
+```
 # Confirma as alterações no banco de dados
 conexao.commit()
 
-# ============================================================
+
 # PASSO 2 - CARREGAR E PREPARAR OS DADOS
-# ============================================================
+
 
 # Utiliza uma consulta SQL para carregar os dados no Pandas
+```python
 df_vendas = pd.read_sql_query(
     'SELECT * FROM vendas1',
     conexao
 )
-
+```
 # Converte a coluna de data para o formato de data do Pandas
+```python
 df_vendas['data_venda'] = pd.to_datetime(df_vendas['data_venda'])
 
 # Exibe os primeiros registros
 print("PRIMEIROS REGISTROS:")
 print(df_vendas.head())
+```
 
-# ============================================================
 # EXPLORAÇÃO DOS DADOS
-# ============================================================
 
+```python
 print("\nINFORMAÇÕES DOS DADOS:")
 print(df_vendas.info())
 
 print("\nESTATÍSTICAS DOS DADOS:")
 print(df_vendas.describe())
+```
 
-# ============================================================
 # PASSO 3 - ANÁLISE DOS DADOS
-# ============================================================
+
 
 # Calcula o total de vendas
+```python
 total_vendas = df_vendas['valor_venda'].sum()
 
 print("\nTOTAL DE VENDAS:")
 print(f"R$ {total_vendas:.2f}")
-
+```
 # Calcula a média das vendas
+```python
 media_vendas = df_vendas['valor_venda'].mean()
 
 print("\nMÉDIA POR VENDA:")
 print(f"R$ {media_vendas:.2f}")
-
+```
 # Soma das vendas por categoria
+```python
 vendas_categoria = df_vendas.groupby('categoria')['valor_venda'].sum()
 
 print("\nVENDAS POR CATEGORIA:")
 print(vendas_categoria)
-
+```
 # Produto com maior valor de venda
+```python
 maior_venda = df_vendas.loc[
     df_vendas['valor_venda'].idxmax()
 ]
 
 print("\nMAIOR VENDA:")
 print(maior_venda)
-
+```
 # Soma das vendas por mês
+```python
 vendas_mes = df_vendas.groupby(
     df_vendas['data_venda'].dt.month
 )['valor_venda'].sum()
 
 print("\nVENDAS POR MÊS:")
 print(vendas_mes)
+```
 
-# ============================================================
 # PASSO 4 - VISUALIZAÇÃO DOS DADOS
-# ============================================================
+
 
 # Configuração visual do Seaborn
+```python
 sns.set_theme()
+```
 
-# ------------------------------------------------------------
 # GRÁFICO 1 - VENDAS POR CATEGORIA
-# ------------------------------------------------------------
 
+```python
 plt.figure(figsize=(8, 5))
 
 sns.barplot(
@@ -149,11 +162,11 @@ plt.ylabel('Valor das Vendas (R$)')
 plt.xticks(rotation=20)
 
 plt.show()
+```
 
-# ------------------------------------------------------------
 # GRÁFICO 2 - VENDAS AO LONGO DOS MESES
-# ------------------------------------------------------------
 
+```python
 plt.figure(figsize=(10, 5))
 
 sns.lineplot(
@@ -167,11 +180,11 @@ plt.xlabel('Mês')
 plt.ylabel('Valor das Vendas (R$)')
 
 plt.show()
+```
 
-# ------------------------------------------------------------
 # GRÁFICO 3 - VENDAS POR PRODUTO
-# ------------------------------------------------------------
 
+```python
 plt.figure(figsize=(12, 5))
 
 sns.barplot(
@@ -185,11 +198,11 @@ plt.xlabel('Produto')
 plt.ylabel('Valor da Venda (R$)')
 
 plt.show()
+```
 
-# ============================================================
 # PASSO 5 - CONCLUSÃO E INSIGHTS
-# ============================================================
 
+```python
 print("========== CONCLUSÃO ==========")
 
 print(f"O total vendido no período foi de R$ {total_vendas:.2f}.")
@@ -211,3 +224,4 @@ print(
 
 # Fecha a conexão com o banco de dados
 conexao.close()
+```
